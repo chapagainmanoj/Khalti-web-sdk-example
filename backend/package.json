@@ -1,0 +1,21 @@
+{
+  "name": "stickly-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.17.1",
+    "body-parser": "^1.17.2",
+    "cors": "^2.8.4",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.4",
+    "method-override": "^2.3.9",
+    "request": "^2.83.0",
+    "whatwg-fetch": "^2.0.3"
+  }
+}
