@@ -10,23 +10,6 @@ import Incomplete from './components/Incomplete.vue'
 // Register components and services
 Vue.use(VueRouter);
 
-import axios from 'axios'
-let data = {
-  "token": "jHAdLDiQopAqzX3RwMMqDF",
-  "amount": 1500
-};
-axios.post(`${window.endpoint}/charge`, data)
-  .then((result) => {
-        // var uuid = res.data.uuid;
-        console.log("Charge Works");
-        console.log(result);
-        // this.$router.push({ path: `order-complete/${uuid}` });
-    })
-    .catch((err)=>
-    console.log("Erro")
-  );
-
-
 // Register routes
 const routes = [
   { name: 'home', path: '/', component: Product },
