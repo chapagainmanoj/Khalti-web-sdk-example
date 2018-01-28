@@ -1,2 +1,2 @@
 ## potato ##
-Vue application WITH khalti-sdk
+Vue application with *Khalti-sdk*
