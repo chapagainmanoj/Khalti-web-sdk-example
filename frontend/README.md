@@ -1,4 +1,4 @@
-# stickly-frontend
+# potato-frontend
 
 > Front end component for an eCommerce application. Built with Vue.js and powered by Khalti for payment processing.
 
