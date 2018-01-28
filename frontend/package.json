@@ -1,9 +1,8 @@
 {
-  "name": "stickly-frontend",
+  "name": "potato-frontend",
   "description": "A Vue.js project",
   "version": "1.0.0",
-  "author": "Connor Leech <connorleech@gmail.com>",
-  "private": true,
+  "author": "Manoj Chapagain <manojc@janakitech.com>",
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
