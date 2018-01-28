@@ -1,4 +1,6 @@
-Stickly Server
+Potato Server
 ===
 
-Created using Node.js, Stripe and Mailgun-js packages
+Created using Node.js express
+*Todo*
+-issue with axios
