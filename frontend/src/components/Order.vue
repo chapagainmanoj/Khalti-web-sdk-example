@@ -35,8 +35,8 @@
         </div>
         <div class="columns">
             <div class='column is-6'>
-                <button type="submit" class="button is-primary is-large is-pulled-right" @click.prevent="onButtonCick" :disabled="checkSending">
-                    <span v-if="checkSending">
+                <button type="submit" class="button is-primary is-large is-pulled-right" @click.prevent="onButtonCick" :disabled="processing">
+                    <span v-if="processing">
                         <i class="fa fa-btn fa-spinner fa-spin"></i>
                         Ordering...
                     </span>
@@ -52,13 +52,13 @@
 <script>
 import axios from 'axios';
 import khalti from 'khalti-web';
-
+const SERVER_HOST = 'http://localhost:3000'
 export default {
     data(){
         return {
             checkout: null,
             client_conf:{
-              key: "test_public_key_dc74e0fd57cb46cd93832aee0a507256"
+              key: "test_public_key_927b651e0ca540b6aa96db8b38b2abc9"
             },
             product:{
               id: "123134234",
@@ -66,10 +66,6 @@ export default {
               url: "http://potato.com/#/order",
               price: 15*100, // paisa
               category: "Vegi"
-            },
-            transaction: {
-              uuid: null,
-              status: 'pending'
             },
             // fields
             name: 'Eric Cartman',
@@ -81,20 +77,16 @@ export default {
                 state: 'Colorado',
                 zip: '94607'
             },
-
-            // cardcheckSending: true,
-            checkSending: false,
-            checkError: false
+            processing: false,
+            failed: false
         }
     },
     methods: {
         khaltiError(error){
             console.log('error');
-            this.$router.push({ path: `order-broken` })
             console.error(error);
         },
         khaltiClose(){
-          this.$router.push({ path: `order-complete/${chargeid}` })
           console.log('widget is closing');
         },
         validate() {
@@ -117,68 +109,36 @@ export default {
                 onClose: this.khaltiClose
               }
             });
-            // let chargeid = 56;
-            // this.createTransaction();
-            // this.charge("QvvS32H7dFHHqngDoNUFkE",1500);
             this.checkout.show({amount:this.product.price});
 
           }else {
             console.log("Cannot validated. Check your details.");
           }
         },
-        createTransaction(token,amount) {
-          let request = {
-              product:{
-                id:this.product.id,
-                name: this.product.name,
-                amount: this.product.price,
-                category: this.product.category
-              },
-              billing_details:{
-                name: this.name,
-                email: this.email,
-                address: this.address
-              },
-              date: Date.now(),
-          };
-          axios.post(`${window.endpoint}/transactions`, request)
-            .then((res,err)=> {
-              if(err){
-                console.error(err);
-              }else {
-                console.log("Transactions uuid obtained");
-                this.transaction.uuid = res.data.uuid
-                this.transaction.status = res.data.status
-                this.charge(token,amount);
-              }
-            });
-        },
-        charge(khalti_token,amount){
-          let request = {
-            transaction_uuid: this.transaction.uuid,
-            token: khalti_token,
-            amount: amount
-          };
-          axios.post(`${window.endpoint}/charge`, request)
-              .then((res) => {
-                  var error = res.data.error;
-                  var uuid = res.data.charge;
-                  if (error){
-                      console.error(error);
-                  } else {
-                      console.log("Charged");
-                      this.$router.push({ path: `order-complete/${uuid}` });
-                  }
-              });
-        },
         khaltiSuccessHandler(payload) {
-          this.checkError = false;
-          this.checkSending = true;
-          console.log("success");
+          this.failed = false;
+          this.processing = true;
+          console.log("Txn succesfully initiated");
           console.log(payload);
-          this.createTransaction(payload.token,payload.amount);
-          // this.charge(payload.token,payload.amount);
-        },
+
+          let request = {
+            token: payload.token,
+            amount: payload.amount
+          };
+          axios.post(`${SERVER_HOST}/charge`, request)
+              .then((res) => {
+                console.log('payment successfull')
+                console.log(res.data)
+                this.processing = false;
+                this.$router.push({ path: `order-complete` });
+              })
+              .catch((error) => {
+                this.failed = true;
+                this.processing = false;
+                console.error(error);
+                this.$router.push({ path: `order-broken` })
+              });
+          }
     }
 }
 </script>

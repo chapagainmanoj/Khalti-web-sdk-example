@@ -1,7 +1,8 @@
 require('dotenv').config();
 
-var axios = require('axios');
-var khalti_url = 'https://khalti.com/api/payment/verify/';
+var requestp= require('request-promise');
+
+var KHALTI_VERIFY = 'https://khalti.com/api/v2/payment/verify/';
 
 var express = require('express'),
 	bodyParser = require('body-parser'),
@@ -23,38 +24,55 @@ app.use(bodyParser.urlencoded({
 app.use(methodOverride());
 app.use(express.static(__dirname + '/public'));
 
-var secret_key = process.env.KHALTI_SECRET_KEY;
+// var secret_key = process.env.KHALTI_SECRET_KEY;
+var secret_key = 'test_secret_key_xxxxxxxx'
 
-// router.post(/pending)
-router.post('/transactions',(req,res)=>{
-	// console.log("Createing Transactions");
-	// do database stuffs here
-	var uuid = "transactions-UUID-xxx";
-	res.json({
-		uuid:uuid,
-		status:'pending'
-	});
+
+router.post('/test',(req,res)=>{
+	console.log(req.body.testdata);
+	// res.jsonp({
+	// 	uuid:'transactions-UUID',
+	// 	status:'success'
+	// });
+	res.status(500).send({
+		error: 'this is error',
+		status: 'error'
+	})
 });
 
 // ROUTES
-router.post('/charge', function(req, res){
-	axios.post( khalti_url,
-		{ token: req.body.token, amount: req.body.amount },
-		{ "Authorization": `Key ${secret_key}`}
-	)
-	.then((result)=>{
-		var uuid = "transactions-UUID-xxx"; // get uuid
-		console.log('charging');
-		// console.log(result);
-			// your business logic
-			res.json({
-				uuid: uuid,
-				status: "paid"
-			});
-	})
-	.catch((error)=> console.error(error));
-});
+router.post('/charge', function(req, res) {
+	// console.log(payload);
 
+	var KHALTI_VERIFY = 'https://khalti.com/api/v2/payment/verify/';
+	let options = {
+	  method: 'POST',
+	  uri: KHALTI_VERIFY,
+	  body: JSON.stringify({
+	    'token': req.body.token,
+	    'amount': req.body.amount
+	  }),
+	  headers: {
+	    "Authorization": 'Key test_secret_key_b6b009c3ce3d4cd79c501de3bca3610f',
+	    "Content-Type": 'application/json'
+	  }
+	}
+	requestp(options)
+	.then((result)=>{
+	  console.log('charged', result);
+	  var uuid = "transactions-UUID-xxx"; // get uuid
+	    res.jsonp({
+	      data: result,
+	      status: "success"
+	    });
+	})
+	.catch((error)=> {
+	  res.status(500).send({
+			error: error.response.data,
+			status: 'failed',
+		});
+	});
+});
 
 app.use('/', router);
 

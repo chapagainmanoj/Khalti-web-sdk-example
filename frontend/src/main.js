@@ -14,7 +14,7 @@ Vue.use(VueRouter);
 const routes = [
   { name: 'home', path: '/', component: Product },
   { name: 'order', path: '/order', component: Order },
-  { name: 'order-complete', path: '/order-complete/:id', component: Complete },
+  { name: 'order-complete', path: '/order-complete', component: Complete },
   { name: 'order-incomplete', path: '/order-broken', component: Incomplete }
 ];
 
