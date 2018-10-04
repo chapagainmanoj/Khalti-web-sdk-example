@@ -3,6 +3,8 @@ require('dotenv').config();
 var requestp= require('request-promise');
 
 var KHALTI_VERIFY = 'https://khalti.com/api/v2/payment/verify/';
+// var secret_key = process.env.KHALTI_SECRET_KEY;
+var SECRET_KEY = 'test_secret_key_b6b009c3ce3d4cd79c501de3bca3610f'
 
 var express = require('express'),
 	bodyParser = require('body-parser'),
@@ -24,16 +26,10 @@ app.use(bodyParser.urlencoded({
 app.use(methodOverride());
 app.use(express.static(__dirname + '/public'));
 
-// var secret_key = process.env.KHALTI_SECRET_KEY;
-var secret_key = 'test_secret_key_xxxxxxxx'
 
 
 router.post('/test',(req,res)=>{
 	console.log(req.body.testdata);
-	// res.jsonp({
-	// 	uuid:'transactions-UUID',
-	// 	status:'success'
-	// });
 	res.status(500).send({
 		error: 'this is error',
 		status: 'error'
@@ -53,14 +49,13 @@ router.post('/charge', function(req, res) {
 	    'amount': req.body.amount
 	  }),
 	  headers: {
-	    "Authorization": 'Key test_secret_key_b6b009c3ce3d4cd79c501de3bca3610f',
+	    "Authorization": `Key ${SECRET_KEY}`,
 	    "Content-Type": 'application/json'
 	  }
 	}
 	requestp(options)
 	.then((result)=>{
 	  console.log('charged', result);
-	  var uuid = "transactions-UUID-xxx"; // get uuid
 	    res.jsonp({
 	      data: result,
 	      status: "success"

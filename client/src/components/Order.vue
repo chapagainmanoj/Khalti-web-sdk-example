@@ -87,6 +87,23 @@ export default {
             console.error(error);
         },
         khaltiClose(){
+        let request = {
+          token: "QUao9cqFzxPgvWJNi9aKac",
+          amount: 1000
+        };
+        axios.post(`${SERVER_HOST}/charge`, request)
+            .then((res) => {
+              console.log('payment successfull')
+              console.log(res.data)
+              this.processing = false;
+              this.$router.push({ path: `order-complete` });
+            })
+            .catch((error) => {
+              this.failed = true;
+              this.processing = false;
+              console.error(error);
+              this.$router.push({ path: `order-broken` })
+            });
           console.log('widget is closing');
         },
         validate() {
