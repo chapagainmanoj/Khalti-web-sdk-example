@@ -3,6 +3,7 @@
 
 ## Summery ##
 These are steps summerizing whole integration:
+
 [1. Signup as merchant](https://khalti.com/merchant/)
 [2. Obtain developers keys from merchant dashboard]()
 [3. Test integration with test keys](#use_test_keys)
